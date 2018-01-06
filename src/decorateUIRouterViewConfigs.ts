@@ -31,7 +31,7 @@ hybridModule.config(['$uiRouterProvider', (router: UIRouter) => {
       const view = views[key];
       const selfView = selfViews[key];
       const reactType = isReactComponent(view.component) && 'react';
-      view.$type = selfViews[key].$type || reactType || view.$type;
+      view.$type = selfView.$type || reactType || view.$type;
     });
 
     return views;

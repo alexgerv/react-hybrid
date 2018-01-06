@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as angular from 'angular';
+import { PropTypes } from 'prop-types';
 import { UIViewData } from '@uirouter/angularjs/lib/directives/viewDirective';
 import { UIRouter } from '@uirouter/core';
 
@@ -21,14 +22,14 @@ export interface IUIRouterContextComponentState {
 export class UIRouterContextComponent extends React.Component<IUIRouterContextComponentProps, IUIRouterContextComponentState> {
   // context from parent react UIView
   public static contextTypes = {
-    router: React.PropTypes.object,
-    parentUIViewAddress: React.PropTypes.object,
+    router: PropTypes.object,
+    parentUIViewAddress: PropTypes.object,
   };
 
   // context to child
   public static childContextTypes = {
-    router: React.PropTypes.object,
-    parentUIViewAddress: React.PropTypes.object,
+    router: PropTypes.object,
+    parentUIViewAddress: PropTypes.object,
   };
 
   public static defaultProps: Partial<IUIRouterContextComponentProps> = {
@@ -44,7 +45,7 @@ export class UIRouterContextComponent extends React.Component<IUIRouterContextCo
 
   private getRouter() {
     // from react
-    if (this.context.router) {
+    if(this.context.router) {
       return this.context.router;
     }
 
@@ -54,7 +55,7 @@ export class UIRouterContextComponent extends React.Component<IUIRouterContextCo
 
   private getParentView() {
     // from react
-    if (this.context.parentUIViewAddress) {
+    if(this.context.parentUIViewAddress) {
       return this.context.parentUIViewAddress;
     }
 
@@ -63,7 +64,9 @@ export class UIRouterContextComponent extends React.Component<IUIRouterContextCo
     let steps = parseInt(this.props.parentContextLevel);
     steps = isNaN(steps) ? 0 : steps;
 
-    while (steps--) ref = ref.parentElement;
+    while(steps--) {
+      ref = ref.parentElement;
+    }
     const $uiView = ref && angular.element(ref).inheritedData('$uiView');
     return $uiView && $uiView && new ParentUIViewAddressAdapter($uiView);
   }
@@ -83,7 +86,7 @@ export class UIRouterContextComponent extends React.Component<IUIRouterContextCo
   }
 
   private refCallback = (ref: HTMLElement) => {
-    if (ref && ref !== this.ref) {
+    if(ref && ref !== this.ref) {
       this.ref = ref;
       this.setState({});
       // Add $uiView data
@@ -91,13 +94,13 @@ export class UIRouterContextComponent extends React.Component<IUIRouterContextCo
   };
 
   public render() {
-    const { router  } = this.state;
-    const { children  } = this.props;
+    const {router} = this.state;
+    const {children} = this.props;
 
     const ready = !!router;
     const childrenCount = React.Children.count(children);
     const child = ready && (childrenCount === 1 ? React.Children.only(children) : <div>{children}</div>);
-    return (this.ref ? child : <div ref={this.refCallback} />);
+    return (this.ref ? child : <div ref={this.refCallback}/>);
   }
 }
 
@@ -107,7 +110,9 @@ export class UIRouterContextComponent extends React.Component<IUIRouterContextCo
  */
 class ParentUIViewAddressAdapter {
   constructor(private _ngdata: UIViewData) {
-    if (!_ngdata) throw new Error("@uirouter/react-hybrid: Address Adapter created with no _ngdata parameter.")
+    if(!_ngdata) {
+      throw new Error("@uirouter/react-hybrid: Address Adapter created with no _ngdata parameter.")
+    }
   }
 
   public get fqn() {
@@ -115,7 +120,7 @@ class ParentUIViewAddressAdapter {
   }
 
   public get context() {
-    if (!this._ngdata || !this._ngdata.$cfg || !this._ngdata.$cfg.viewDecl) {
+    if(!this._ngdata || !this._ngdata.$cfg || !this._ngdata.$cfg.viewDecl) {
       console.log(this._ngdata);
       throw new Error("@uirouter/react-hybrid: Uh oh. Views are in an invalid state. Parent UIView has no $cfg or viewDecl");
     }

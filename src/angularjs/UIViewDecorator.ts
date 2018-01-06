@@ -23,7 +23,7 @@ hybridModule.directive('reactUiViewAdapter', function () {
   return {
     restrict: 'E',
     link: function (scope, elem, attrs) {
-      const el = elem[0];
+      const el: Element = elem[0];
       let _ref = null;
 
       const log = (msg, ref) => {
